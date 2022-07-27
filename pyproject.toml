@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "graf-ci"
+version = "0.1.0"
+description = ""
+authors = ["nichitaelgraf"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+autopep8 = "^1.6.0"
+isort = "^5.10.1"
+wemake-python-styleguide = "^0.16.1"
+unify = "^0.5"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.autopep8]
+in-place = true
+recursive = true
+aggresive = 2

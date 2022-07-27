@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+autopep8 ci
+isort --profile wemake ci
+unify -r -i ci
