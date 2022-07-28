@@ -4,16 +4,16 @@ import socket
 import subprocess
 import sys
 
-import helpers
+from ci import helpers
 
 
 def update_repository(repository: str) -> None:
     """Update the watched repository and check for new commit_id."""
     try:
-        subprocess.check_output(['./update_repo.sh', repository])
+        return subprocess.check_output(['./update_repo.sh', repository])
     except subprocess.CalledProcessError as process_error:
         raise SystemError(
-            'Could not update and check repository. ' /
+            'Could not update and check repository. ', \
             'Reason {process_error}'.format(process_error=process_error),
         )
 
@@ -49,7 +49,7 @@ def parse_args(args) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def verify_dispatcher_status(dispatcher_host: str, dispatcher_port: int):
+def verify_dispatcher_status(dispatcher_host: str, dispatcher_port: int) -> str:
     try:
         return helpers.communicate(
             dispatcher_host,
@@ -58,29 +58,30 @@ def verify_dispatcher_status(dispatcher_host: str, dispatcher_port: int):
         )
     except socket.error as socket_error:
         raise ConnectionError(
-            'Could not communicate with dispatcher server ' /
+            'Could not communicate with dispatcher server ' \
             '{error}'.format(error=socket_error),
         )
 
-
-def poll(args: argparse.Namespace) -> None:
+def _poll(dispatcher_host, dispatcher_port, repo):
+    update_repository(repo)
+    if os.path.isfile('.commit_id'):
+        response = verify_dispatcher_status(
+            dispatcher_host,
+            int(dispatcher_port),
+        )
+        if response == 'OK':
+            dispatch_commit_for_test(dispatcher_host, int(dispatcher_port))
+        else:
+            raise ConnectionError(
+                'Could not communicate with dispatcher server {e}',
+            )
+def poll(args: argparse.Namespace) -> None: # pragma: no cover
     """Pool repository for new commit."""
     dispatcher_host, dispatcher_port = args.dispatcher_server.split(':')
     while True:
-        update_repository(args.repo)
-        if os.path.isfile('.commit_id'):
-            response = verify_dispatcher_status(
-                dispatcher_host,
-                int(dispatcher_port),
-            )
-            if response == 'OK':
-                dispatch_commit_for_test(dispatcher_host, int(dispatcher_port))
-            else:
-                raise ConnectionError(
-                    'Could not communicate with dispatcher server {e}',
-                )
+        _poll(dispatcher_host, dispatcher_port, args.repo)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     args = parse_args(sys.argv[1:])
     poll(args)
