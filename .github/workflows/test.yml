@@ -27,7 +27,7 @@ jobs:
         key: venv-3.10-${{ hashfiles('poetry.lock')}}
     - name: Install dependency
       run: |
-        poetry config virtualenv.in-project true
+        poetry config virtualenvs.in-project true
         poetry run pip install -U pip
         poetry install
     
