@@ -4,16 +4,16 @@ import socket
 import subprocess
 import sys
 
-import helpers
+from ci import helpers
 
 
 def update_repository(repository: str) -> None:
     """Update the watched repository and check for new commit_id."""
     try:
-        subprocess.check_output(['./update_repo.sh', repository])
+        return subprocess.check_output(['./update_repo.sh', repository])
     except subprocess.CalledProcessError as process_error:
         raise SystemError(
-            'Could not update and check repository. ' /
+            'Could not update and check repository. ', \
             'Reason {process_error}'.format(process_error=process_error),
         )
 
