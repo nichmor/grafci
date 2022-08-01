@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-autopep8 ci
-isort --profile wemake ci
-unify -r -i ci
+autopep8 ci tests
+isort --profile wemake ci tests
+unify -r -i ci tests
