@@ -26,10 +26,10 @@ def test_update_repository_raise_exception(mock_check_output):
         repo_observer.update_repository('test_repo')
         assert 'test_cmd' in system_error
 
+
 @patch('ci.repo_observer.open', new_callable=mock_open, read_data='commit_1')
 @patch('ci.repo_observer.run_tests')
 def test_dispatch_commit_for_test(mock_run_tests, mock_open):
-    # mock_communicate.return_value = 'OK'
     repo_observer.dispatch_commit_for_test('test_repo_folder')
     mock_run_tests.assert_called_with('commit_1', 'test_repo_folder')
 
@@ -52,7 +52,7 @@ def test_poll_no_commit(update_repository_mock, is_file_mock):
 @patch('ci.repo_observer.json.dump')
 @patch('ci.repo_observer.open', new_callable=mock_open)
 @patch('ci.repo_observer.os.makedirs')
-@patch('ci.repo_observer.helpers.run_pytest_tests')
+@patch('ci.repo_observer.pytest_helpers.run_pytest_tests')
 @patch('ci.repo_observer.subprocess.check_output')
 def test_run_tests(
     _,

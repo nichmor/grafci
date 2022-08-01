@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 
-from ci import helpers
+from ci import pytest_helpers
 
 
 def update_repository(repository: str) -> None:
@@ -20,15 +20,15 @@ def update_repository(repository: str) -> None:
 
 def run_tests(commit_id, repo_folder: str):
     subprocess.check_output(
-        ['./test_runner_script.sh', repo_folder, commit_id]
+        ['./test_runner_script.sh', repo_folder, commit_id],
     )
-    results = helpers.run_pytest_tests(repo_folder)
+    test_results = pytest_helpers.run_pytest_tests(repo_folder)
     filename = 'test_results/test_result_{commit}.json'.format(
-        commit=commit_id
+        commit=commit_id,
     )
     os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, 'w') as f:
-        json.dump(results, f)
+    with open(filename, 'w') as results_file:
+        json.dump(test_results, results_file)
 
 
 def dispatch_commit_for_test(repo_folder: str):
@@ -56,7 +56,7 @@ def _poll(repo):
 
 def poll(args: argparse.Namespace) -> None:  # pragma: no cover
     """Pool repository for new commit."""
-    while True:
+    while True:  # noqa: WPS457
         _poll(args.repo)
 
 
