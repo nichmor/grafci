@@ -19,7 +19,7 @@ pytest-cov = "^3.0.0"
 mkdocs = "^1.3.1"
 
 [tool.poetry.scripts]
-graf-ci = 'graf_ci:main'
+grafci = 'grafci:main'
 
 [tool.poetry.dev-dependencies]
 
