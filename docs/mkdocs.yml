@@ -1,0 +1,6 @@
+site_name: Graf-CI
+nav:
+    - Home: index.md
+    - About: about.md
+
+theme: readthedocs
