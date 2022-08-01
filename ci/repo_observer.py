@@ -1,6 +1,6 @@
 import argparse
+import json
 import os
-import socket
 import subprocess
 import sys
 
@@ -13,33 +13,32 @@ def update_repository(repository: str) -> None:
         return subprocess.check_output(['./update_repo.sh', repository])
     except subprocess.CalledProcessError as process_error:
         raise SystemError(
-            'Could not update and check repository. ', \
+            'Could not update and check repository. ',
             'Reason {process_error}'.format(process_error=process_error),
         )
 
 
-def dispatch_commit_for_test(dispatcher_host: str, dispatcher_port: int):
+def run_tests(commit_id, repo_folder: str):
+    subprocess.check_output(
+        ['./test_runner_script.sh', repo_folder, commit_id]
+    )
+    results = helpers.run_pytest_tests(repo_folder)
+    filename = 'test_results/test_result_{commit}.json'.format(
+        commit=commit_id
+    )
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, 'w') as f:
+        json.dump(results, f)
+
+
+def dispatch_commit_for_test(repo_folder: str):
     with open('.commit_id', 'r') as commit_file:
-        commit = commit_file.readline()
-        response = helpers.communicate(
-            dispatcher_host,
-            dispatcher_port,
-            'dispatch:{commit}'.format(commit=commit),
-        )
-    if response != 'OK':
-        raise ConnectionError(
-            'Could not dispatch the test {response}'.format(response=response),
-        )
+        commit = commit_file.readline().strip()
+        run_tests(commit, repo_folder)
 
 
 def parse_args(args) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--dispatcher-server',
-        help='dispatcher host:port, by default it uses localhost:8888',
-        default='localhost:8888',
-        action='store',
-    )
     parser.add_argument(
         'repo',
         metavar='REPO',
@@ -49,39 +48,18 @@ def parse_args(args) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def verify_dispatcher_status(dispatcher_host: str, dispatcher_port: int) -> str:
-    try:
-        return helpers.communicate(
-            dispatcher_host,
-            dispatcher_port,
-            'status',
-        )
-    except socket.error as socket_error:
-        raise ConnectionError(
-            'Could not communicate with dispatcher server ' \
-            '{error}'.format(error=socket_error),
-        )
-
-def _poll(dispatcher_host, dispatcher_port, repo):
+def _poll(repo):
     update_repository(repo)
     if os.path.isfile('.commit_id'):
-        response = verify_dispatcher_status(
-            dispatcher_host,
-            int(dispatcher_port),
-        )
-        if response == 'OK':
-            dispatch_commit_for_test(dispatcher_host, int(dispatcher_port))
-        else:
-            raise ConnectionError(
-                'Could not communicate with dispatcher server {e}',
-            )
-def poll(args: argparse.Namespace) -> None: # pragma: no cover
+        dispatch_commit_for_test(repo)
+
+
+def poll(args: argparse.Namespace) -> None:  # pragma: no cover
     """Pool repository for new commit."""
-    dispatcher_host, dispatcher_port = args.dispatcher_server.split(':')
     while True:
-        _poll(dispatcher_host, dispatcher_port, args.repo)
+        _poll(args.repo)
 
 
-if __name__ == '__main__': # pragma: no cover
+if __name__ == '__main__':  # pragma: no cover
     args = parse_args(sys.argv[1:])
     poll(args)
