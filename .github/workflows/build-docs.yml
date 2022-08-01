@@ -33,4 +33,4 @@ jobs:
 
     - name: Upload docs
       run: |
-        cd docs && poetry run mkdocs gh-deploy
+        cd docs && poetry run mkdocs gh-deploy --force
