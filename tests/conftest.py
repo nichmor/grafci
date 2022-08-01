@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from ci.result_collector import ResultsCollector
+from grafci.result_collector import ResultsCollector
 
 
 @dataclass(init=True)

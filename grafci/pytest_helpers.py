@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from ci.result_collector import ResultsCollector
+from grafci.result_collector import ResultsCollector
 
 
 def run_pytest_tests(repo_folder) -> dict:

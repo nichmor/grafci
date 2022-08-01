@@ -1,8 +1,12 @@
 [tool.poetry]
-name = "graf-ci"
+name = "grafci"
 version = "0.1.0"
 description = ""
 authors = ["nichitaelgraf"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/nichmor/grafci"
+repository = "https://github.com/nichmor/grafci"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -13,6 +17,9 @@ unify = "^0.5"
 pytest = "^7.1.2"
 pytest-cov = "^3.0.0"
 mkdocs = "^1.3.1"
+
+[tool.poetry.scripts]
+graf-ci = 'graf_ci:main'
 
 [tool.poetry.dev-dependencies]
 

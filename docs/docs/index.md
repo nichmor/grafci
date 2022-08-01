@@ -1,9 +1,9 @@
-# 1. Welcome to graf-ci
+# 1. Welcome to grafci
 
 
 ## 1.1. Commands
 
-* `graf-ci [dir-name]` - Will start polling local repository for new commits.
+* `grafci [dir-name]` - Will start polling local repository for new commits.
 
 ## 1.2. Project layout
 

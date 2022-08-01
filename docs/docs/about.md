@@ -1,6 +1,6 @@
 # About
 
-**graf-ci** gives you the following:
+**grafci** gives you the following:
 
 * Nothing
 * Built with 😍

@@ -2,4 +2,4 @@
 
 set -e
 
-flake8 ci
+flake8 grafci

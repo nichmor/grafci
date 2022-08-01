@@ -1,4 +1,4 @@
-site_name: Graf-CI
+site_name: GrafCI
 nav:
     - Home: index.md
     - About: about.md

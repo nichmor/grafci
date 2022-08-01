@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 
-from ci import pytest_helpers
+from grafci import pytest_helpers
 
 
 def update_repository(repository: str) -> None:
@@ -60,6 +60,10 @@ def poll(args: argparse.Namespace) -> None:  # pragma: no cover
         _poll(args.repo)
 
 
-if __name__ == '__main__':  # pragma: no cover
+def main():  # pragma: no cover
     args = parse_args(sys.argv[1:])
     poll(args)
+
+
+if __name__ == '__main__':  # pragma: no cover
+    main()

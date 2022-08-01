@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-autopep8 ci tests
-isort --profile wemake ci tests
-unify -r -i ci tests
+autopep8 grafci tests
+isort --profile wemake grafci tests
+unify -r -i grafci tests
